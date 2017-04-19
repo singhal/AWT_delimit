@@ -331,6 +331,7 @@ def main():
 	outdir, treedir = get_dir(args)	
 	alns = run_alignments(outdir, args)
 
+
 	if args.trim:
 		trims = run_trimming(alns, args)
 	if args.raxmltrees:
