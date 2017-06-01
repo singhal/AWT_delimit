@@ -11,8 +11,8 @@ parser.add_argument("-f", "--file", required=True, help='File with the sample da
 parser.add_argument("-n", "--name", required=True, help='Output name.')
 args = parser.parse_args()
 
-indir = '/Users/Sonal/Dropbox/Carlia_Lampropholis_Species_Delimitation/data/'
-outfile = os.path.join(indir, '%s_divergence.csv' % args.name)
+indir = '/scratch/drabosky_flux/sosi/AWT_delimit'
+outfile = os.path.join(indir, 'pop_gen', 'divergence_%s.csv' % args.name)
 out = open(outfile, 'w')
 out.write('sp1,sp2,metric,denom,value\n')
 
@@ -152,7 +152,9 @@ def calc_pi(sp, sps, var, c):
 	denom = 0
 	diff = 0
 
-	for exon in var:
+	contigs = [exon for exon in c if exon in var]
+
+	for exon in contigs:
 		for pos in var[exon]:
 			# within coding sequence
 			if pos >= c[exon][0] and pos <= c[exon][1]:
@@ -206,7 +208,9 @@ def calc_div_sub(sp1, sp2, sps, var, c):
 	raw_pi1 = 0
 	raw_pi2 = 0
 
-	for exon in var:
+	contigs = [exon for exon in c if exon in var]
+
+	for exon in contigs:
 		for pos in var[exon]:
 			# within coding sequence
 			if pos >= c[exon][0] and pos <= c[exon][1]:
@@ -252,7 +256,9 @@ def calc_fst_sub(sp1, sp2, sps, var, c):
 	counts = {sp1: [], sp2: []}
 	sizes = {sp1: [], sp2: []}
 
-	for exon in var:
+	contigs = [exon for exon in c if exon in var]
+
+	for exon in contigs:
 		for pos in var[exon]:
 			# within coding sequence
 			if pos >= c[exon][0] and pos <= c[exon][1]:
@@ -322,6 +328,8 @@ def get_seq(indir, sp):
 def calc_div_silent(sps, var, coords, gencode, sites):
 	
 	species = sorted(list(sps.keys()))
+	contigs = [exon for exon in coords if exon in var]
+
 
 	for ix, sp1 in enumerate(species):
 		ids1 = sps[sp1]
@@ -329,7 +337,7 @@ def calc_div_silent(sps, var, coords, gencode, sites):
 		for sp2 in species[(ix+1):]:
 			res = {'denom': 0, 'pi1': 0, 'pi2': 0, 'btn': 0}
 			ids2 = sps[sp2]
-			for c in coords:
+			for c in contigs:
 				start = coords[c][0]
 				end = coords[c][1]
 				cds = seq[c][(start - 1):end]
@@ -403,15 +411,14 @@ gencode = {
 	}
 sites =  site_count(gencode)
 
-# 0.005 to 0.02 at silent 
 # get groups
 sps, inds = get_groups(args.file)
 # get variant data
 # what should my data structure be?
 # exon, pos, inds, variants?
-# var = get_variants(indir, sps)
+var = get_variants(indir, sps)
 # pickle.dump(var, open( "var.pickle", "wb" ))
-var = pickle.load(open( "var.pickle", "rb" ))
+# var = pickle.load(open( "var.pickle", "rb" ))
 # get cds coordinates
 # because of logic of ref approach
 # coords will be same across all lineages

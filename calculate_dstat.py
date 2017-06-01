@@ -17,8 +17,9 @@ parser.add_argument("-t", "--tree", required=True, help='Newick string.')
 parser.add_argument("-o", "--outgroup", required=True, help='Outgroup.')
 args = parser.parse_args()
 
+indir = '/scratch/drabosky_flux/sosi/AWT_delimit'
 outfile = os.path.join(indir, 'pop_gen', 'dstat_%s.csv' % args.name)
-indir = '/Users/Sonal/Dropbox/Carlia_Lampropholis_Species_Delimitation/data/'
+# indir = '/Users/Sonal/Dropbox/Carlia_Lampropholis_Species_Delimitation/data/'
 n_boot = 200
 
 def get_groups(sfile):
@@ -141,8 +142,7 @@ def get_snps(triad, sps, var):
 						# with each one rep'd twice
 						if counts[a] != 2:
 							keep = False
-				else:
-					keep = False
+				else:					keep = False
 					
 				if keep:
 					if aln[0] != aln[1]:
@@ -163,7 +163,7 @@ def calc_dstat(dstat):
 
 	# dstat
 	if bottom != 0:
-		dval = top / bottom
+		dval = top / float(bottom)
 	else:
 		dval = np.nan
 
@@ -193,7 +193,7 @@ def calc_boot(dstat, times):
 
 		# dstat
 		if bottom != 0:
-			dval = top / bottom
+			dval = top / float(bottom)
 		else:
 			dval = np.nan
 

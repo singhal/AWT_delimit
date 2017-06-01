@@ -262,7 +262,7 @@ def call_snps(args, files, genome, dir, num):
 				if len(genos) > 0:
 					af = genos.count('1') / float(len(genos))
 					# mutate seq
-					if af >= 0.5:
+					if af > 0.5:
 						pos = int(d[1]) - 1
 						seq[d[0]][pos] = d[4]
 	i.close()
